@@ -37,11 +37,22 @@ const userSchema = mongoose.Schema(
       unique: true,
       default: () => crypto.randomBytes(20).toString('hex'),
     },
+    oauthprofiles: [
+      {
+        provider: { type: String },
+        profileId: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.index({
+  'oauthprofiles.provider': 1,
+  'oauthprofiles.profileId': 1,
+});
 
 async function generateHash(password) {
   return bcrypt.hash(password, 12);
@@ -51,21 +62,21 @@ userSchema.pre('save', function preSave(next) {
   const user = this;
   if (user.isModified('password')) {
     return generateHash(user.password)
-      .then((hash) => {
-        user.password = hash;
-        return next;
-      })
-      .catch((err) => {
-        return next(err);
-      });
+    .then((hash) => {
+      user.password = hash;
+      return next();
+    })
+    .catch((error) => {
+      return next(error);
+    });
   }
   return next();
 });
 
 userSchema.methods.comparePassword = async function comparePassword(
-  candidatePass
+  candidatePassword
 ) {
-  return bcrypt.compare(candidatePass, this.password);
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
 // We export the model `User` from the `UserSchema`

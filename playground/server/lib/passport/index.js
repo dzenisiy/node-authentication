@@ -1,7 +1,8 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
+const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
+
 /* eslint-disable no-unused-vars */
 const UserService = require('../../services/UserService');
 
@@ -75,13 +76,23 @@ module.exports = (config) => {
         clientID: config.GITHUB_CLIENT_ID,
         clientSecret: config.GITHUB_CLIENT_SECRET,
         scope: ['user:email'],
-        callBackUrl: 'http://localhost:3000/auth/github/callback',
+        callbackURL: 'http://localhost:3000/auth/github/callback',
         passReqToCallback: true,
       },
-      async (req, accessToken, refreshTokem, profile, done) => {
+      async (req, accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile);
-          return done(null, false);
+          req.session.tempOAuthProfile = null;
+          const user = await UserService.findByOAuthProfile(
+            profile.provider,
+            profile.id
+          );
+          if (!user) {
+            req.session.tempOAuthProfile = {
+              provider: profile.provider,
+              profileId: profile.id,
+            };
+          }
+          return done(null, user);
         } catch (err) {
           return done(err);
         }
