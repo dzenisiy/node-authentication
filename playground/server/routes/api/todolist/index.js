@@ -37,7 +37,10 @@ module.exports = () => {
 
   router.delete('/:itemId', async (req, res, next) => {
     try {
-      const result = await TodolistService.deleteItem(req.user.id, req.params.itemId);
+      const result = await TodolistService.deleteItem(
+        req.user.id,
+        req.params.itemId
+      );
       return res.json({ result });
     } catch (err) {
       return next(err);

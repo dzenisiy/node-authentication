@@ -17,20 +17,18 @@ module.exports = () => {
       const user = await UserService.findById(req.params.userId);
       if (!user || user.verificationToken !== req.params.token) {
         req.session.messages.push({
-          text: 'Invalid credentials provided',
+          text: 'Invalid credentials provided!',
           type: 'danger',
         });
       } else {
         user.verified = true;
         await user.save();
         req.session.messages.push({
-          text: 'Your account is verified',
+          text: 'You have been verified!',
           type: 'success',
         });
-
-        return res.redirect('/');
       }
-      return next('Not implemented!');
+      return res.redirect('/');
     } catch (err) {
       return next(err);
     }

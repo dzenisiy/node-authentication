@@ -62,13 +62,13 @@ userSchema.pre('save', function preSave(next) {
   const user = this;
   if (user.isModified('password')) {
     return generateHash(user.password)
-    .then((hash) => {
-      user.password = hash;
-      return next();
-    })
-    .catch((error) => {
-      return next(error);
-    });
+      .then((hash) => {
+        user.password = hash;
+        return next();
+      })
+      .catch((error) => {
+        return next(error);
+      });
   }
   return next();
 });

@@ -1,13 +1,12 @@
 const { Router } = require('express');
-
-const router = Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+
+const router = Router();
 const todolistRouter = require('./todolist');
 
 module.exports = (params) => {
   const { config } = params;
-
   router.post(
     '/login',
     passport.authenticate('local', {
@@ -31,9 +30,7 @@ module.exports = (params) => {
 
   router.get(
     '/whoami',
-    passport.authenticate('jwt', {
-      sesssion: false,
-    }),
+    passport.authenticate('jwt', { session: false }),
     (req, res) => {
       return res.json({
         username: req.user.username,
@@ -43,9 +40,7 @@ module.exports = (params) => {
 
   router.use(
     '/todolist',
-    passport.authenticate('jwt', {
-      sesssion: false,
-    }),
+    passport.authenticate('jwt', { session: false }),
     todolistRouter(params)
   );
 

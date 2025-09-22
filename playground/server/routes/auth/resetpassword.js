@@ -55,9 +55,10 @@ module.exports = () => {
         }
 
         req.session.messages.push({
-          text: 'If we found matching user you will recieve a link to reset',
+          text:
+            'If we found a matching user, you will receive a password reset link.',
           type: 'info',
-        })
+        });
         /**
          * @todo: On success, redirect the user to some other page, like the login page
          */
@@ -80,10 +81,9 @@ module.exports = () => {
         req.params.userId,
         req.params.resetToken
       );
-
       if (!resetToken) {
         req.session.messages.push({
-          text: 'Token is invalid',
+          text: 'The provided token is invalid!',
           type: 'danger',
         });
         return res.redirect('/auth/resetpassword');
@@ -112,15 +112,13 @@ module.exports = () => {
           req.params.userId,
           req.params.resetToken
         );
-
         if (!resetToken) {
           req.session.messages.push({
-            text: 'Token is invalid',
+            text: 'The provided token is invalid!',
             type: 'danger',
           });
           return res.redirect('/auth/resetpassword');
         }
-
         const validationErrors = validation.validationResult(req);
         const errors = [];
         if (!validationErrors.isEmpty()) {
@@ -150,7 +148,7 @@ module.exports = () => {
         await UserService.changePassword(req.params.userId, req.body.password);
         await UserService.deletePasswordResetToken(req.params.resetToken);
         req.session.messages.push({
-          text: 'Password is changed',
+          text: 'Your password was successfully changed!',
           type: 'success',
         });
         return res.redirect('/auth/login');

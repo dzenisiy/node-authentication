@@ -1,6 +1,8 @@
 const { Router } = require('express');
-const cors = require('cors');
+
 const { ensureLoggedIn } = require('connect-ensure-login');
+
+const cors = require('cors');
 const authRouter = require('./auth');
 const apiRouter = require('./api');
 const playgroundRouter = require('./playground');
