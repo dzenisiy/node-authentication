@@ -2,3 +2,7 @@
 node_modules
 .tmp
 npm-debug.log
+
+# IntelliJ project files
+.idea
+*.iml
