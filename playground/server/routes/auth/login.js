@@ -31,7 +31,15 @@ module.exports = () => {
           text: 'Username or password is invalid',
           type: 'danger',
         });
-      } else {
+      } else if (user && !user.verified) {
+        errors.push('username');
+        errors.push('password');
+        req.session.messages.push({
+          text: 'Please verify your email address',
+          type: 'danger',
+        });
+      }
+      else {
         const isValid = await user.comparePassword(req.body.password);
         if (!isValid) {
           errors.push('username');
