@@ -73,6 +73,7 @@ module.exports = (config) => {
       req.session.userId = null;
       return next();
     }
+    req.sessionOptions.maxAge = req.session.rememberme;
     req.user = user;
     res.locals.user = user;
     return next();
